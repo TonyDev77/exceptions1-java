@@ -51,16 +51,14 @@ public class Program11 {
 			chkOut = sc.nextLine();
 			parse = Reservation.dtf.parse(chkOut);
 			checkOut = LocalDate.from(parse);
-			
-			LocalDate now = LocalDate.now();
-			if (checkIn.isBefore(now) || checkOut.isBefore(now)) {
-				System.out.println("Error in reservation: Reservation dates must be after check-in date");
-			} else if (checkOut.isBefore(checkIn)) {
-				System.out.println("Error in Reservation: Check-out date must be after check-in date");
+			 
+			String error = reservation.updateDates(checkIn, checkOut);
+			if (error != null) {
+				System.out.println("Error in Reservation: " + error);
 			} else {
-				reservation.updateDates(checkIn, checkOut);
-				System.out.println("Resevation: " + reservation.toString());
+				System.out.println("Reservation: " + reservation.toString());
 			}
+			
 		}
 		
 		sc.close();
