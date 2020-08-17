@@ -5,6 +5,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Scanner;
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
 
 public class Program11 {
 
@@ -20,46 +21,47 @@ public class Program11 {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		
-		System.out.print("Room number: ");
-		int roomNumber = sc.nextInt();
-		sc.nextLine();
 		
-		System.out.print("Checkin Date: (DD/MM/AAAA): ");
-		String chkIn = sc.nextLine();
-		TemporalAccessor parse = Reservation.dtf.parse(chkIn);
-		LocalDate checkIn = LocalDate.from(parse);
-		
-		System.out.print("Checkin Date: (DD/MM/AAAA): ");
-		String chkOut = sc.nextLine();
-		parse = Reservation.dtf.parse(chkOut);
-		LocalDate checkOut = LocalDate.from(parse);
-		
-		if (checkOut.isBefore(checkIn)) {
-			System.out.println("Error in Reservation: Check-out date must be after check-in date");
-		} else {
+		try {
+			// Room
+			System.out.print("Room number: ");
+			int roomNumber = sc.nextInt();
+			sc.nextLine();
+			// Check in
+			System.out.print("Check in Date: (DD/MM/AAAA): ");
+			String chkIn = sc.nextLine();
+			TemporalAccessor parse = Reservation.dtf.parse(chkIn);
+			LocalDate checkIn = LocalDate.from(parse);
+			// Check out
+			System.out.print("Check out Date: (DD/MM/AAAA): ");
+			String chkOut = sc.nextLine();
+			parse = Reservation.dtf.parse(chkOut);
+			LocalDate checkOut = LocalDate.from(parse);
+			// Cria objeto
 			Reservation reservation = new Reservation(roomNumber, checkIn, checkOut);
 			System.out.println("Resevation: " + reservation.toString());
-			
-			// Atualizando as datas
+			// Atualizando as dados...
+			// Check in
 			System.out.println("\nEnter data to update the reservation:");
-			System.out.print("Checkin Date: (DD/MM/AAAA): ");
+			System.out.print("Check in Date: (DD/MM/AAAA): ");
 			chkIn = sc.nextLine();
 			parse = Reservation.dtf.parse(chkIn);
 			checkIn = LocalDate.from(parse);
-			
-			System.out.print("Checkin Date: (DD/MM/AAAA): ");
+			// Check out
+			System.out.print("Check out Date: (DD/MM/AAAA): ");
 			chkOut = sc.nextLine();
 			parse = Reservation.dtf.parse(chkOut);
 			checkOut = LocalDate.from(parse);
-			 
-			String error = reservation.updateDates(checkIn, checkOut);
-			if (error != null) {
-				System.out.println("Error in Reservation: " + error);
-			} else {
-				System.out.println("Reservation: " + reservation.toString());
-			}
+			// Cria objeto
+			reservation.updateDates(checkIn, checkOut);
+			System.out.println("Reservation: " + reservation.toString());
 			
+		} catch (DomainException e) {
+			System.out.println("Error in resrvation: " + e.getMessage());
+		} catch (RuntimeException e) {
+			System.out.println("Erro inesperado!");
 		}
+			
 		
 		sc.close();
 	}
